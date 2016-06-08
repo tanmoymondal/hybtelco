@@ -1,0 +1,44 @@
+<hybrisconfig xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='../bin/platform/resources/schemas/extensions.xsd'>
+  <extensions>
+    <path dir='${HYBRIS_BIN_DIR}' autoload='false' />
+    <extension name='acceleratorcms' />
+    <extension name='addonsupport' />
+    <extension name='b2ctelcocheckoutaddon' />
+    <extension name='b2ctelcocockpits' />
+    <extension name='b2ctelcostore' />
+    <extension name='b2ctelcostorefront' />
+    <extension name='cissubscription' />
+    <extension name='cissubscriptionatddtests' />
+    <extension name='commercesearchbackoffice' />
+    <extension name='commerceservicesbackoffice' />
+    <extension name='emsclient' />
+    <extension name='emsui' />
+    <extension name='entitlementstorefront' />
+    <extension name='entitlementatddtests' />
+    <extension name='mcc' />
+    <extension name='solrfacetsearchbackoffice' />
+    <extension name='solrserver' />
+    <extension name='configurablebundleatddtests' />
+    <extension name='subscriptionstorefront' />
+    <extension name='subscriptionatddtests' />
+    <extension name='subscriptionserviceshmc' />
+    <extension name='subscriptionbackoffice' />
+    <!-- <extension name='yacceleratorstorefront' />
+    <extension name='yacceleratorcockpits' />
+    <extension name='yacceleratorfulfilmentprocess' />
+    <extension name='yacceleratorcore' />  -->
+    <extension name='customersupportbackoffice' /> 
+	
+	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext//bonstore/bonstorefulfilmentprocess"/>
+	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext//bonstore/bonstorecore"/>
+	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext//bonstore/bonstoreinitialdata"/>
+	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext//bonstore/bonstorefacades"/>
+	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext//bonstore/bonstoretest"/>
+	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext//bonstore/bonstorestorefront"/>
+	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext//bonstore/bonstorecockpits"/>
+	
+    <webapp contextroot='entitlements-web' path='${HYBRIS_BIN_DIR}/../../hybris-ems/binary/entitlements-web.war' />
+    <webapp contextroot='hybris-cis-mock-subscription-web' path='${HYBRIS_BIN_DIR}/../../hybris-sbg/binary/hybris-cis-mock-subscription-web.war' />
+	
+  </extensions>
+</hybrisconfig>
