@@ -36,6 +36,14 @@
 			<value code="YELLOW"/>
 		</enumtype>
 	</enumtypes>
+	
+	<relations>
+	    <relation code="CustomerOrganizationRelation" localized="false" generate="true" autocreate="true">
+	    	<deployment table="BonStoreOrganization" typecode="19891" />
+	       <sourceElement type="Customer" qualifier="customers" cardinality="many" />
+	       <targetElement type="Organization" qualifier="organizations" cardinality="many"/> 
+	    </relation>
+	</relations>
 
 	<itemtypes>
 
@@ -114,5 +122,48 @@
 			</itemtype>
 		</typegroup>
 		
+		<typegroup name="Org">
+			<itemtype code="Customer" autocreate="false" generate="true">
+				<attributes>
+					<attribute qualifier="status" type="java.lang.Boolean" >
+						<defaultvalue>Boolean.FALSE</defaultvalue>
+						<modifiers optional="false" />
+						<persistence type="property"/>
+						<description>It indicates if account is locked or not</description>
+					</attribute>
+					<attribute qualifier="attemptCount" type="java.lang.Integer">
+						<description>It indicates how many times user entered incorrect password successively</description>
+						<modifiers optional="false" />
+						<persistence type="property"/>
+					</attribute>
+				</attributes>
+			</itemtype>
+			
+			<itemtype code="Organization" generate="true" autocreate="true" >
+			<deployment table="BonStoreOrg" typecode="19890" />
+			<attributes>
+				<attribute qualifier="id" type="java.lang.Integer" >
+					<persistence type="property"/>
+					<modifiers optional="false"/>
+				</attribute>
+				<attribute qualifier="name" type="java.lang.String">
+					<persistence type="property" />
+					<modifiers optional="false"/>
+				</attribute>
+				<attribute qualifier="phone" type="java.lang.Integer">
+					<persistence type="property"/>
+					<modifiers optional="false"/>
+				</attribute>
+				<attribute qualifier="email" type="java.lang.String">
+					<persistence type="property"/>
+					<modifiers optional="false"/>
+				</attribute>
+			</attributes>
+			</itemtype>
+			
+		</typegroup>
 	</itemtypes>
+	
+	
+	
 </items>
