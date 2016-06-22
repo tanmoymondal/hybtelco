@@ -20,6 +20,8 @@
            http://www.springframework.org/schema/context/spring-context.xsd">
 
      <context:annotation-config/> 
+     
+     <context:component-scan base-package="org.bonstore.core"/>
 
 	<!-- Spring Integration -->
 	<import resource="classpath:/bonstorecore/integration/hot-folder-store-electronics-spring.xml"/>
@@ -434,6 +436,27 @@
 	      class="org.bonstore.core.strategies.impl.ApparelSizeProductReferenceTargetStrategy">
 		<property name="commerceCategoryService" ref="commerceCategoryService"/>
 		<property name="rootCategoryCode" value="categories"/>
+	</bean>
+	
+	<bean id="sendOrganizationJob" class="org.bonstore.core.jobs.SendOrganizationJob" autowire="byName"/>
+	<bean id="organizationService" class="org.bonstore.core.services.impl.OrganizationServiceImpl" autowire="byName"/>
+	<bean id="organizationDao" class="org.bonstore.core.dao.impl.OrganizationDaoImpl" autowire="byName"/>
+	
+	<alias name="defaultEmailMessageModelPopulator" alias="emailMessageModelPopulator"/>
+	<bean id="defaultEmailMessageModelPopulator" class="org.bonstore.core.populators.EmailMessageModelPopulator">
+		<property name="replyToAddress" value="${mail.replyto}"/>
+		<property name="mailFromAddress" value="${mail.from}"/>
+		<property name="modelService" ref="modelService"/>
+	</bean>
+	
+	<alias name="defaultEmailMessageModelConverter" alias="emailMessageModelConverter"/>
+	<bean id="defaultEmailMessageModelConverter" parent="abstractPopulatingConverter">
+		<property name="targetClass" value="de.hybris.platform.acceleratorservices.model.email.EmailMessageModel"/>
+		<property name="populators">
+			<list>
+				<ref bean="emailMessageModelPopulator"/>
+			</list>
+		</property>
 	</bean>
 	
 </beans>

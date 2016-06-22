@@ -40,8 +40,8 @@
 	<relations>
 	    <relation code="CustomerOrganizationRelation" localized="false" generate="true" autocreate="true">
 	    	<deployment table="BonStoreOrganization" typecode="19891" />
-	       <sourceElement type="Customer" qualifier="customers" cardinality="many" />
-	       <targetElement type="Organization" qualifier="organizations" cardinality="many"/> 
+	       <sourceElement type="Customer" qualifier="customers" cardinality="many" collectiontype="list" />
+	       <targetElement type="Organization" qualifier="organizations" cardinality="many" collectiontype="list"/> 
 	    </relation>
 	</relations>
 
@@ -125,13 +125,13 @@
 		<typegroup name="Org">
 			<itemtype code="Customer" autocreate="false" generate="true">
 				<attributes>
-					<attribute qualifier="status" type="java.lang.Boolean" >
+					<attribute qualifier="status" type="boolean" >
 						<defaultvalue>Boolean.FALSE</defaultvalue>
 						<modifiers optional="false" />
 						<persistence type="property"/>
 						<description>It indicates if account is locked or not</description>
 					</attribute>
-					<attribute qualifier="attemptCount" type="java.lang.Integer">
+					<attribute qualifier="attemptCount" type="int">
 						<description>It indicates how many times user entered incorrect password successively</description>
 						<modifiers optional="false" />
 						<persistence type="property"/>
@@ -142,15 +142,15 @@
 			<itemtype code="Organization" generate="true" autocreate="true" >
 			<deployment table="BonStoreOrg" typecode="19890" />
 			<attributes>
-				<attribute qualifier="id" type="java.lang.Integer" >
+				<attribute qualifier="id" type="int" >
 					<persistence type="property"/>
-					<modifiers optional="false"/>
+					<modifiers optional="false" unique="true"/>
 				</attribute>
-				<attribute qualifier="name" type="java.lang.String">
+				<attribute qualifier="name" type="localized:java.lang.String">
 					<persistence type="property" />
 					<modifiers optional="false"/>
 				</attribute>
-				<attribute qualifier="phone" type="java.lang.Integer">
+				<attribute qualifier="phone" type="java.lang.String">
 					<persistence type="property"/>
 					<modifiers optional="false"/>
 				</attribute>
