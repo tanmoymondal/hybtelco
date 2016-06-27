@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration xmlns="hybris.de/schemas/hmc/generic"
+						xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+						xsi:schemaLocation="hybris.de/schemas/hmc/generic hmc.xsd">
+
+	<!-- Configuration for extension bonstore -->
+	<explorertree>
+		<group name="bonstoregroup">
+			<typeref type="Organization"/>
+		</group>
+	</explorertree>
+
+	<type name="Organization" mode="append">
+		<organizer>
+			<search mode="replace">
+				<condition attribute="id"/>
+				<condition attribute="name"/>
+				<condition attribute="phone"/>
+				<condition attribute="email"/>
+			</search>
+			<result>
+				<listview mode="replace">
+					<itemlayout>
+						<attribute name="id"/>
+						<attribute name="name"/>
+						<attribute name="phone"/>
+						<attribute name="email"/>
+					</itemlayout>
+				</listview>
+			</result>
+			<editor>
+				<essentials>
+					<listlayout>
+						<attribute name="id"/>
+					</listlayout>
+				</essentials>
+				<tab name="tab.bonstore">
+					<section name="section.bonstore">
+						<listlayout>
+							<attribute name="id"/>
+							<attribute name="name"/>
+							<attribute name="phone"/>
+							<attribute name="email"/>
+						</listlayout>
+					</section>
+				</tab>
+			</editor>
+		</organizer>
+	</type>
+</configuration>
