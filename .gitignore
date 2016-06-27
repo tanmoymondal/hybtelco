@@ -50,3 +50,4 @@ rebel.xml
 .idea/libraries
 
 **/node_modules
+**/import

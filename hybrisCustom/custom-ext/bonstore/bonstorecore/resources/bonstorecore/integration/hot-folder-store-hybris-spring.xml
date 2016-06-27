@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2016 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:file="http://www.springframework.org/schema/integration/file"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration
+		http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/file
+		http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+		
+    <context:annotation-config/> 
+
+	<bean id="baseDirectoryHybris" class="java.lang.String">
+		<constructor-arg value="${hotFolder.dir}" />
+	</bean>
+	<!-- 1) Scan for files -->
+	<file:inbound-channel-adapter id="batchFilesHybris" directory="#{baseDirectoryHybris}"
+		filename-regex="^(.*)-(\d+)\.csv" comparator="fileOrderComparator">
+		<int:poller fixed-rate="2000" />
+	</file:inbound-channel-adapter>
+
+	<!-- 2) move the file to processing and setup header -->
+	<file:outbound-gateway request-channel="batchFilesHybris" reply-channel="batchFilesHybrisProc"
+		directory="#{baseDirectoryHybris}/processing" delete-source-files="true" />
+	<int:service-activator input-channel="batchFilesHybrisProc" output-channel="batchFilesHeaderInit"
+		ref="hybrisHeaderSetupTask" method="execute" />
+	<bean id="hybrisHeaderSetupTask" class="de.hybris.platform.acceleratorservices.dataimport.batch.task.HeaderSetupTask">
+		<property name="catalog" value="hybrisProductCatalog" />
+		<property name="net" value="false" />
+		<property name="storeBaseDirectory" ref="baseDirectoryHybris" />
+	</bean>
+	
+	<bean id="batchInternalOrganizationConverterMapping"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+          p:mapping="internal_base_organization"
+          p:converter-ref="batchInternalOrganizationConverter"/>
+ 
+    <bean id="batchInternalOrganizationConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+        <property name="header">
+            <value>
+                # Insert Organization
+                INSERT_UPDATE Organization;id[unique=true];name;phone;email;customers(uid);
+            </value>
+        </property>
+        <property name="impexRow">
+			<value>;{+0};{1};{2};{3};{+4};</value>
+		</property>
+        <property name="rowFilter">
+            <bean class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexRowFilter">
+                <property name="expression" value="row[1]"/>
+            </bean>
+        </property>
+        <property name="type" value="Organization"/>
+    </bean>
+    
+  <bean id="batchInternalCustomerConverterMapping"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+          p:mapping="internal_base_customer"
+          p:converter-ref="batchInternalCustomerConverter"/>
+    
+    <bean id="batchInternalCustomerConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+		<property name="header">
+			<value>
+				# Insert Customer
+				INSERT_UPDATE Customer;uid[unique=true];name;status;attemptCount;organizations(id);
+			</value>
+		</property>
+		<property name="impexRow">
+			<value>;{+0};{+1};{+2};{+3};{+4};</value>
+		</property>
+		<property name="rowFilter">
+            <bean class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexRowFilter">
+                <property name="expression" value="row[1]"/>
+            </bean>
+        </property>
+        <property name="type" value="Customer"/>
+	</bean>	 
+    
+    
+    
+    
+</beans>
