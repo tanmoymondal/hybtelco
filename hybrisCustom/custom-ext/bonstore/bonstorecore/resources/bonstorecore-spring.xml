@@ -28,6 +28,7 @@
 	<import resource="classpath:/bonstorecore/integration/hot-folder-store-hybris-spring.xml"/>
 	<import resource="classpath:/bonstorecore/integration/hot-folder-store-apparel-spring.xml"/>
 	<import resource="classpath:/bonstorecore/integration/hot-folder-common-spring.xml"/>
+	<import resource="classpath:/bonstorecore/integration/hot-folder-store-bonstore-spring.xml"/>
 	
 
 	<!-- SystemSetup for the BonstoreCore -->
