@@ -44,84 +44,69 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class SendOrganizationJobTest
 {
 	@InjectMocks
-	SendOrganizationJob sendOrganizationJob;
+	private SendOrganizationJob sendOrganizationJob;
 
 	private CronJobModel cronJob;
 
 	@Mock
-	EmailAddressModel emailAddressModel;
+	private EmailAddressModel emailAddressModel;
 
 	@Mock
-	EmailMessageModel emailMessageModel;
+	private EmailMessageModel emailMessageModel;
 
 	@Mock
-	OrganizationModel organizationModel;
+	private OrganizationModel organizationModel;
 
 	@Mock
-	CustomerModel customerModel;
+	private CustomerModel customerModel;
 
 	@Mock
-	OrganizationService organizationService;
+	private OrganizationService organizationService;
 
 	@Mock
-	EmailService emailService;
+	private EmailService emailService;
 
 	@Mock
-	CommonI18NService commonI18NService;
+	private CommonI18NService commonI18NService;
 
 	@Mock
-	Converter<OrganizationModel, EmailMessageModel> emailMessageModelConverter;
+	private Converter<OrganizationModel, EmailMessageModel> emailMessageModelConverter;
 	@Mock
-	LanguageModel languageModel;
+	private LanguageModel languageModel;
 
-	Locale locale = new Locale("EN");
+	private final Locale locale = new Locale("EN");
+	private List<OrganizationModel> emptyOrganizationModels;
+	private List<OrganizationModel> organizationModels;
 
 	@Before
 	public void setUp()
 	{
-		//		Registry.activateMasterTenant();
 		final List<CustomerModel> customerModelList = new ArrayList<CustomerModel>();
 		customerModelList.add(customerModel);
 		cronJob = new CronJobModel();
+		emptyOrganizationModels = new ArrayList<OrganizationModel>();
+		organizationModels = Arrays.asList(organizationModel);
+		when(emailMessageModelConverter.convert(organizationModel)).thenReturn(emailMessageModel);
+		when(commonI18NService.getLocaleForLanguage(languageModel)).thenReturn(locale);
 	}
 
 	@Test
 	public void testOrganizationModelIsEmpty()
 	{
-		final List<OrganizationModel> models = new ArrayList<OrganizationModel>();
-		when(organizationService.getOrganizationList()).thenReturn(models);
+		when(organizationService.getOrganizationList()).thenReturn(emptyOrganizationModels);
 		final PerformResult performResult = sendOrganizationJob.perform(cronJob);
-
+		assertNotNull(performResult);
 		assertEquals(CronJobStatus.FINISHED, performResult.getStatus());
 	}
 
 	@Test
 	public void testOrganizationModelIsNotEmpty()
 	{
-		final List<OrganizationModel> models = new ArrayList<OrganizationModel>();
-		models.add(organizationModel);
-		when(emailMessageModelConverter.convert(organizationModel)).thenReturn(emailMessageModel);
-		when(organizationService.getOrganizationList()).thenReturn(models);
-		when(commonI18NService.getLocaleForLanguage(languageModel)).thenReturn(locale);
-		when(emailService.send(emailMessageModel)).thenReturn(true);
-
-		final PerformResult performResult = sendOrganizationJob.perform(cronJob);
-		assertNotNull(sendOrganizationJob.perform(cronJob));
-		assertEquals(CronJobResult.SUCCESS, performResult.getResult());
-	}
-
-	@Test
-	public void testPerform()
-	{
-		final List<OrganizationModel> models = Arrays.asList(organizationModel);
-		when(emailMessageModelConverter.convert(organizationModel)).thenReturn(emailMessageModel);
-		when(organizationService.getOrganizationList()).thenReturn(models);
-		when(commonI18NService.getLocaleForLanguage(languageModel)).thenReturn(locale);
+		when(organizationService.getOrganizationList()).thenReturn(organizationModels);
 		when(emailService.send(emailMessageModel)).thenReturn(true);
 		final PerformResult performResult = sendOrganizationJob.perform(cronJob);
-		assertNotNull(sendOrganizationJob.perform(cronJob));
+		assertNotNull(performResult);
 		assertEquals(CronJobResult.SUCCESS, performResult.getResult());
-
 	}
 
 }

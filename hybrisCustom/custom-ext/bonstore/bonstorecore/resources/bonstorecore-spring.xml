@@ -438,14 +438,25 @@
 		<property name="rootCategoryCode" value="categories"/>
 	</bean>
 	
-	<bean id="sendOrganizationJob" class="org.bonstore.core.jobs.SendOrganizationJob" autowire="byName"/>
-	<bean id="organizationService" class="org.bonstore.core.services.impl.OrganizationServiceImpl" autowire="byName"/>
-	<bean id="organizationDao" class="org.bonstore.core.dao.impl.OrganizationDaoImpl" autowire="byName"/>
+	<bean id="bonStoreSendOrganizationJob" class="org.bonstore.core.jobs.SendOrganizationJob" autowire="byName">
+		<property name="organizationService" ref="bonStoreOrganizationService"/>
+		<property name="commonI18NService" ref="commonI18NService"/>
+		<property name="emailMessageModelConverter" ref="emailMessageModelConverter"/>
+		<property name="emailService" ref="emailService"/>
+		<property name="flexibleSearchService" ref="flexibleSearchService"/>
+		<property name="modelService" ref="modelService"/>
+		<property name="sessionService" ref="sessionService"/>
+		
+	</bean>
+	<bean id="bonStoreOrganizationService" class="org.bonstore.core.services.impl.OrganizationServiceImpl" autowire="byName">
+		<property name="organizationDao" ref="bonStoreOrganizationDao"/>
+	</bean>
 	
-	<alias name="defaultEmailMessageModelPopulator" alias="emailMessageModelPopulator"/>
-	<bean id="defaultEmailMessageModelPopulator" class="org.bonstore.core.populators.EmailMessageModelPopulator">
-		<property name="replyToAddress" value="${mail.replyto}"/>
-		<property name="mailFromAddress" value="${mail.from}"/>
+	<bean id="bonStoreOrganizationDao" class="org.bonstore.core.dao.impl.OrganizationDaoImpl"/>
+	
+	<bean id="bonsStoreEmailMessageModelPopulator" class="org.bonstore.core.populators.EmailMessageModelPopulator" autowire="byName">
+		<!-- <property name="replyToAddress" value="${mail.replyto}"/>
+		<property name="mailFromAddress" value="${mail.from}"/> -->
 		<property name="modelService" ref="modelService"/>
 	</bean>
 	
@@ -454,7 +465,7 @@
 		<property name="targetClass" value="de.hybris.platform.acceleratorservices.model.email.EmailMessageModel"/>
 		<property name="populators">
 			<list>
-				<ref bean="emailMessageModelPopulator"/>
+				<ref bean="bonsStoreEmailMessageModelPopulator"/>
 			</list>
 		</property>
 	</bean>

@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.bonstore.core.model.OrganizationModel;
+import org.springframework.beans.factory.annotation.Value;
 
 
 /**
@@ -28,9 +29,12 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 	private static final String NO_USERS = "No users exists in the organization";
 	private static final String LIST_OF_USERS = "List of users in your organization :-";
 	private static final String DISPLAY_NAME = "HybrisUser ";
-	private String replyToAddress;
 	private ModelService modelService;
+
+	@Value("${mail.from}")
 	private String mailFromAddress;
+	@Value("${mail.replyto}")
+	private String replyToAddress;
 
 	@Override
 	public void populate(final OrganizationModel source, final EmailMessageModel target) throws ConversionException
@@ -66,7 +70,7 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 	 * @param customersList
 	 * @return mail body in the form of list of customers.
 	 */
-	public String getEmailBodyContent(final List<CustomerModel> customersList)
+	private String getEmailBodyContent(final List<CustomerModel> customersList)
 	{
 		if (customersList.isEmpty())
 		{
@@ -81,19 +85,17 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 		return LIST_OF_USERS + "<br>" + sBuilder.toString();
 	}
 
-	public void setReplyToAddress(final String replyToAddress)
-	{
-		this.replyToAddress = replyToAddress;
-	}
+	/*
+	 * public void setReplyToAddress(final String replyToAddress) { this.replyToAddress = replyToAddress; }
+	 */
 
 	public void setModelService(final ModelService modelService)
 	{
 		this.modelService = modelService;
 	}
 
-	public void setMailFromAddress(final String mailFromAddress)
-	{
-		this.mailFromAddress = mailFromAddress;
-	}
+	/*
+	 * public void setMailFromAddress(final String mailFromAddress) { this.mailFromAddress = mailFromAddress; }
+	 */
 
 }
