@@ -20,6 +20,8 @@
            http://www.springframework.org/schema/context/spring-context.xsd">
 
      <context:annotation-config/> 
+     
+     <context:component-scan base-package="org.bonstore.core"/>
 
 	<!-- Spring Integration -->
 	<import resource="classpath:/bonstorecore/integration/hot-folder-store-electronics-spring.xml"/>
@@ -434,6 +436,38 @@
 	      class="org.bonstore.core.strategies.impl.ApparelSizeProductReferenceTargetStrategy">
 		<property name="commerceCategoryService" ref="commerceCategoryService"/>
 		<property name="rootCategoryCode" value="categories"/>
+	</bean>
+	
+	<bean id="bonStoreSendOrganizationJob" class="org.bonstore.core.jobs.SendOrganizationJob" autowire="byName">
+		<property name="organizationService" ref="bonStoreOrganizationService"/>
+		<property name="commonI18NService" ref="commonI18NService"/>
+		<property name="emailMessageModelConverter" ref="emailMessageModelConverter"/>
+		<property name="emailService" ref="emailService"/>
+		<property name="flexibleSearchService" ref="flexibleSearchService"/>
+		<property name="modelService" ref="modelService"/>
+		<property name="sessionService" ref="sessionService"/>
+		
+	</bean>
+	<bean id="bonStoreOrganizationService" class="org.bonstore.core.services.impl.OrganizationServiceImpl" autowire="byName">
+		<property name="organizationDao" ref="bonStoreOrganizationDao"/>
+	</bean>
+	
+	<bean id="bonStoreOrganizationDao" class="org.bonstore.core.dao.impl.OrganizationDaoImpl"/>
+	
+	<bean id="bonsStoreEmailMessageModelPopulator" class="org.bonstore.core.populators.EmailMessageModelPopulator" autowire="byName">
+		<!-- <property name="replyToAddress" value="${mail.replyto}"/>
+		<property name="mailFromAddress" value="${mail.from}"/> -->
+		<property name="modelService" ref="modelService"/>
+	</bean>
+	
+	<alias name="defaultEmailMessageModelConverter" alias="emailMessageModelConverter"/>
+	<bean id="defaultEmailMessageModelConverter" parent="abstractPopulatingConverter">
+		<property name="targetClass" value="de.hybris.platform.acceleratorservices.model.email.EmailMessageModel"/>
+		<property name="populators">
+			<list>
+				<ref bean="bonsStoreEmailMessageModelPopulator"/>
+			</list>
+		</property>
 	</bean>
 	
 </beans>

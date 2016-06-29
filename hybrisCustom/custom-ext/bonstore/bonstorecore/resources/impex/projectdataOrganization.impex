@@ -1,0 +1,5 @@
+INSERT_UPDATE Organization;id[unique=true];name;phonenumber;email;customers
+;15;TestOrganization15;11115;hybristesting2016@gmail.com;;
+;16;TestOrganization16;11116;hybristesting2016@gmail.com;;
+;17;TestOrganization17;11117;hybristesting2016@gmail.com;;
+;18;TestOrganization18;11118;hybristesting2016@gmail.com;;
