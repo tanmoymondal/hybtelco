@@ -462,4 +462,13 @@
 		</property>
 	</bean>
 	
+	<bean id="loginChangeInterceptor" class="org.bonstore.core.interceptors.LoginChangeInterceptor"/>
+	
+	<bean id="CustomerInterceptorMapping" class="de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping">
+		<property name="interceptor" ref="loginChangeInterceptor" />
+		<property name="typeCode" value="Customer" />
+	</bean>
+
+	<bean id="customerListener" class="org.bonstore.core.event.CustomerEventListener" autowire="byName" />
+	
 </beans>
