@@ -14,12 +14,12 @@ import de.hybris.platform.servicelayer.search.SearchResult;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bonstore.core.dao.OrganizationDao;
 import org.bonstore.core.model.OrganizationModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 
@@ -31,24 +31,30 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class OrganizationDaoImplTest
 {
+	@Spy
 	@InjectMocks
-	OrganizationModel organizationModel;
+	private OrganizationDaoImpl organizationDao;
 	@Mock
-	FlexibleSearchService flexibleSearchService;
+	private OrganizationModel organizationModel;
 	@Mock
-	SearchResult<OrganizationModel> searchResult;
+	private FlexibleSearchService flexibleSearchService;
 	@Mock
-	OrganizationDao organizationDao;
+	private SearchResult<Object> searchResult;
 	@Mock
-	FlexibleSearchQuery query;
+	private FlexibleSearchQuery query;
+
+	final String queryString = //
+			"SELECT {p:" + OrganizationModel.PK + "} "//
+					+ "FROM {" + OrganizationModel._TYPECODE + " AS p} ";
+
 
 	@Test
-	public void getOrganizationList()
+	public void shouldReturnOrganizationList()
 	{
-		final List<OrganizationModel> models = Arrays.asList(organizationModel);
-		when(flexibleSearchService.<OrganizationModel> search(query)).thenReturn(searchResult);
-		when(flexibleSearchService.<OrganizationModel> search(query).getResult()).thenReturn(models);
-		when(organizationDao.getOrganizationList()).thenReturn(models);
-		assertEquals(models.size(), organizationDao.getOrganizationList().size());
+		final List<Object> objectModels = Arrays.asList(organizationModel);
+		final List<OrganizationModel> organizationModels = Arrays.asList(organizationModel);
+		when(flexibleSearchService.search(queryString)).thenReturn(searchResult);
+		when(searchResult.getResult()).thenReturn(objectModels);
+		assertEquals(organizationModels, organizationDao.getOrganizationList());
 	}
 }

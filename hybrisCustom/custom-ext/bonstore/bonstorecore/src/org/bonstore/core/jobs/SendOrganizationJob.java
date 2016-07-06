@@ -36,31 +36,14 @@ public class SendOrganizationJob extends AbstractJobPerformable<CronJobModel>
 	private OrganizationService organizationService;
 	private EmailService emailService;
 	private CommonI18NService commonI18NService;
-
 	private PerformResult performResult;
-
 	private Converter<OrganizationModel, EmailMessageModel> emailMessageModelConverter;
 
-	public void setOrganizationService(final OrganizationService organizationService)
-	{
-		this.organizationService = organizationService;
-	}
-
-	public void setEmailService(final EmailService emailService)
-	{
-		this.emailService = emailService;
-	}
-
-	public void setCommonI18NService(final CommonI18NService commonI18NService)
-	{
-		this.commonI18NService = commonI18NService;
-	}
 
 	@Override
 	public PerformResult perform(final CronJobModel cronJob)
 	{
 		final LanguageModel languageModel = cronJob.getSessionLanguage();
-		LOG.info("Sending list of users in organization to all admins");
 		performResult = new PerformResult(CronJobResult.FAILURE, CronJobStatus.ABORTED);
 		final List<OrganizationModel> organizationModels = organizationService.getOrganizationList();
 		if (organizationModels.isEmpty())
@@ -70,10 +53,11 @@ public class SendOrganizationJob extends AbstractJobPerformable<CronJobModel>
 		}
 		else
 		{
-			for (final OrganizationModel model : organizationModels)
+			for (final OrganizationModel organizationModel : organizationModels)
 			{
-				final EmailMessageModel emailMessageModel = emailMessageModelConverter.convert(model);
-				emailMessageModel.setSubject(USER_MESSAGE + model.getName(commonI18NService.getLocaleForLanguage(languageModel)));
+				final EmailMessageModel emailMessageModel = emailMessageModelConverter.convert(organizationModel);
+				emailMessageModel
+						.setSubject(USER_MESSAGE + organizationModel.getName(commonI18NService.getLocaleForLanguage(languageModel)));
 				emailService.send(emailMessageModel);
 			}
 			performResult = new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
@@ -92,5 +76,58 @@ public class SendOrganizationJob extends AbstractJobPerformable<CronJobModel>
 	{
 		this.emailMessageModelConverter = emailMessageModelConverter;
 	}
+
+
+	/**
+	 * @return the organizationService
+	 */
+	public OrganizationService getOrganizationService()
+	{
+		return organizationService;
+	}
+
+	/**
+	 * @param organizationService
+	 *           the organizationService to set
+	 */
+	public void setOrganizationService(final OrganizationService organizationService)
+	{
+		this.organizationService = organizationService;
+	}
+
+	/**
+	 * @return the emailService
+	 */
+	public EmailService getEmailService()
+	{
+		return emailService;
+	}
+
+	/**
+	 * @param emailService
+	 *           the emailService to set
+	 */
+	public void setEmailService(final EmailService emailService)
+	{
+		this.emailService = emailService;
+	}
+
+	/**
+	 * @return the commonI18NService
+	 */
+	public CommonI18NService getCommonI18NService()
+	{
+		return commonI18NService;
+	}
+
+	/**
+	 * @param commonI18NService
+	 *           the commonI18NService to set
+	 */
+	public void setCommonI18NService(final CommonI18NService commonI18NService)
+	{
+		this.commonI18NService = commonI18NService;
+	}
+
 
 }
