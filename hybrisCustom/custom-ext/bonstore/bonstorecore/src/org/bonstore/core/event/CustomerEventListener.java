@@ -34,12 +34,12 @@ public class CustomerEventListener extends AbstractEventListener<LoginChangeEven
 		{
 			LOG.debug("### Entering event handler ###");
 			Thread.sleep(2000);
-			final CustomerModel customer = (CustomerModel) userService.getUserForUID(StringUtils.lowerCase(event.getUid()));
+			final CustomerModel customerModel = (CustomerModel) userService.getUserForUID(StringUtils.lowerCase(event.getUid()));
 
-			customer.setAttemptCount(0);
-			customer.setStatus(false);
+			customerModel.setAttemptCount(0);
+			customerModel.setStatus(false);
 
-			modelService.save(customer);
+			modelService.save(customerModel);
 			LOG.debug("### Leaving event handler ###");
 
 		}

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.bonstore.core.interceptors;
 
@@ -9,8 +9,10 @@ import de.hybris.platform.servicelayer.interceptor.InterceptorContext;
 import de.hybris.platform.servicelayer.interceptor.InterceptorException;
 import de.hybris.platform.servicelayer.interceptor.PrepareInterceptor;
 
+import org.apache.log4j.Logger;
 import org.bonstore.core.event.LoginChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  * @author Tanmoy_Mondal
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class LoginChangeInterceptor implements PrepareInterceptor
 {
+	static final private Logger LOG = Logger.getLogger(LoginChangeInterceptor.class);
 	private static final int MAX_ATTEMPT_COUNT = 3;
 
 	@Autowired
@@ -27,6 +30,7 @@ public class LoginChangeInterceptor implements PrepareInterceptor
 	@Override
 	public void onPrepare(final Object model, final InterceptorContext ctx) throws InterceptorException
 	{
+		LOG.debug("Entering onPrepare method");
 		if (model instanceof CustomerModel)
 		{
 			final CustomerModel customer = (CustomerModel) model;
@@ -36,6 +40,7 @@ public class LoginChangeInterceptor implements PrepareInterceptor
 				eventService.publishEvent(new LoginChangeEvent(customer.getUid(), customer.isLoginDisabled()));
 			}
 		}
+		LOG.debug("Exiting onPrepare method");
 	}
 
 	private boolean checkLoginDisabledStatus(final CustomerModel customer)

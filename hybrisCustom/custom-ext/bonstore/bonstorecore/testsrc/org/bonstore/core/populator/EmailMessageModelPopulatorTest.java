@@ -39,30 +39,27 @@ public class EmailMessageModelPopulatorTest
 {
 
 	private static final String NO_USERS = "No users exists in the organization";
-	private static final String LIST_OF_USERS = "List of users in your organization :-";
-	private static final String DISPLAY_NAME = "HybrisUser ";
-	private final String replyToAddress = "reply@abcdef.com";
 	private final String mailFromAddress = "mail@fromaddress.com";
 	private AbstractPopulatingConverter<OrganizationModel, EmailMessageModel> emailMessageModelConverter;
 
 	@Mock
 	private OrganizationModel source;
-
 	@Mock
 	private ModelService modelService;
 	@Mock
 	private ServicesUtil servicesUtil;
 	@Mock
-	CustomerModel customerModel1;
+	private CustomerModel customerModel1;
 	@Mock
-	CustomerModel customerModel2;
+	private CustomerModel customerModel2;
 	@InjectMocks
-	EmailMessageModelPopulator emailMessageModelPopulator;
+	private EmailMessageModelPopulator emailMessageModelPopulator;
 
 	private EmailMessageModel target;
-	List<CustomerModel> customerList;
+	private List<CustomerModel> customerList;
 
-	@SuppressWarnings("static-access")
+	@SuppressWarnings(
+	{ "static-access", "deprecation" })
 	@Before
 	public void setUp()
 	{

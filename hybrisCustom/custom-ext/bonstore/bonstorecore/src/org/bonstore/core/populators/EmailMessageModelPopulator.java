@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bonstore.core.model.OrganizationModel;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -31,6 +32,8 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 	private static final String DISPLAY_NAME = "HybrisUser ";
 	private ModelService modelService;
 
+	static final private Logger LOG = Logger.getLogger(EmailMessageModelPopulator.class);
+
 	@Value("${mail.from}")
 	private String mailFromAddress;
 	@Value("${mail.replyto}")
@@ -39,6 +42,7 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 	@Override
 	public void populate(final OrganizationModel source, final EmailMessageModel target) throws ConversionException
 	{
+		LOG.debug("### Entering populate method ###");
 		if (null == source)
 		{
 			return;
@@ -61,7 +65,7 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 
 		target.setToAddresses(toAddresses);
 		target.setFromAddress(fromAddress);
-
+		LOG.debug("### Exiting populate method ###");
 	}
 
 	/**
@@ -72,6 +76,7 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 	 */
 	private String getEmailBodyContent(final List<CustomerModel> customersList)
 	{
+		LOG.debug("### Entering getEmailBodyContent method ###");
 		if (customersList.isEmpty())
 		{
 			return NO_USERS;
@@ -82,6 +87,7 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 			sBuilder.append("<br>");
 			sBuilder.append(customerModel.getName() + "<br>");
 		}
+		LOG.debug("### Exiting getEmailBodyContent method ###");
 		return LIST_OF_USERS + "<br>" + sBuilder.toString();
 	}
 

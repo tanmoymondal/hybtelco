@@ -53,7 +53,7 @@ public class LoginChangeInterceptorTest
 
 	@SuppressWarnings("boxing")
 	@Test
-	public void testOnPrepareTrue() throws InterceptorException
+	public void testLoginDisabledStatusFalse() throws InterceptorException
 	{
 		when(customerModel.isLoginDisabled()).thenReturn(true);
 		loginChangeInterceptor.onPrepare(customerModel, ctx);
@@ -61,7 +61,7 @@ public class LoginChangeInterceptorTest
 
 	@SuppressWarnings("boxing")
 	@Test
-	public void testOnPrepareFalse() throws InterceptorException
+	public void testLoginDisabledStatusTrue() throws InterceptorException
 	{
 		when(customerModel.isLoginDisabled()).thenReturn(false);
 		loginChangeInterceptor.onPrepare(customerModel, ctx);

@@ -45,7 +45,6 @@ public class CustomerEventListenerTest
 	@Before
 	public void setUp()
 	{
-		// userService.getUserForUID
 		when(userService.getUserForUID(anyString())).thenReturn(customerModel);
 		doNothing().when(modelService).save(customerModel);
 		given(customerModel.getAttemptCount()).willReturn(0);
