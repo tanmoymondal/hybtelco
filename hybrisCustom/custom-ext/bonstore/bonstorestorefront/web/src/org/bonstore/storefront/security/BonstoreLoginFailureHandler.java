@@ -3,8 +3,9 @@
  */
 package org.bonstore.storefront.security;
 
-import de.hybris.platform.acceleratorstorefrontcommons.security.AbstractAcceleratorAuthenticationProvider;
 import de.hybris.platform.core.model.user.CustomerModel;
+import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.servicelayer.user.UserService;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -14,43 +15,67 @@ import org.apache.log4j.Logger;
  * @author Tanmoy_Mondal
  *
  */
-public class BonstoreLoginFailureHandler extends AbstractAcceleratorAuthenticationProvider
+public class BonstoreLoginFailureHandler
 {
 	private static final Logger LOG = Logger.getLogger(BonstoreLoginFailureHandler.class);//NOPMD
+	private UserService userService;
+	private ModelService modelService;
+
 
 	public void registerFailedLogin(final String uid)
 	{
+		LOG.info("### Entering the registerFailedLogin method ###");
+
 		if (StringUtils.isNotEmpty(uid))
 		{
 			final CustomerModel customerModel = (CustomerModel) getUserService().getUserForUID(StringUtils.lowerCase(uid));
-
-			getModelService().refresh(customerModel);
 			int attemptCount = customerModel.getAttemptCount();
 			++attemptCount;
-			boolean flag = false;
-			if (attemptCount < 3)
-			{
-				flag = true;
-				customerModel.setAttemptCount(attemptCount);
-			}
 			if (attemptCount == 3)
 			{
-				flag = true;
-				customerModel.setAttemptCount(attemptCount);
 				customerModel.setStatus(true);
 				customerModel.setLoginDisabled(true);
 			}
-			if (flag)
-			{
-				getModelService().save(customerModel);
-			}
+			customerModel.setAttemptCount(attemptCount);
+			getModelService().save(customerModel);
 
-			if (LOG.isDebugEnabled())
-			{
-				LOG.debug("Failed Login for user " + uid + ", count now " + attemptCount);
-			}
 		}
+		LOG.info("### Exiting the registerFailedLogin method ###");
 
+	}
+
+	/**
+	 * @return the userService
+	 */
+	public UserService getUserService()
+	{
+		return userService;
+	}
+
+	/**
+	 * @param userService
+	 *           the userService to set
+	 */
+	public void setUserService(final UserService userService)
+	{
+		this.userService = userService;
+	}
+
+	/**
+	 * @param modelService
+	 *           the modelService to set
+	 */
+	public void setModelService(final ModelService modelService)
+	{
+		this.modelService = modelService;
+	}
+
+	/**
+	 * @return the modelService
+	 */
+	public ModelService getModelService()
+	{
+		return modelService;
 	}
 
 }

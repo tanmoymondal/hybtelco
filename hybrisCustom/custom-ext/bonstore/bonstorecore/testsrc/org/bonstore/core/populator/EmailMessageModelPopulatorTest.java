@@ -39,7 +39,7 @@ public class EmailMessageModelPopulatorTest
 {
 
 	private static final String NO_USERS = "No users exists in the organization";
-	private final String mailFromAddress = "mail@fromaddress.com";
+	private static final String mailFromAddress = "mail@fromaddress.com";
 	private AbstractPopulatingConverter<OrganizationModel, EmailMessageModel> emailMessageModelConverter;
 
 	@Mock
