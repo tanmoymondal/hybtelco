@@ -8,7 +8,7 @@ INSERT_UPDATE CockpitUIConfigurationMedia;code[unique=true];mime;realfilename;@m
 ;ApparelProduct_ProductDetails_cockpitgroup_ui_config;text/xml;ApparelProduct_ProductDetails.xml;$jarResource/xml/ApparelProduct_ProductDetails.xml
 ;ApparelStyleVariantProduct_ProductDetails_cockpitgroup_ui_config;text/xml;ApparelStyleVariantProduct_ProductDetails.xml;$jarResource/xml/ApparelStyleVariantProduct_ProductDetails.xml
 ;ApparelSizeVariantProduct_ProductDetails_cockpitgroup_ui_config;text/xml;ApparelSizeVariantProduct_ProductDetails.xml;$jarResource/xml/ApparelSizeVariantProduct_ProductDetails.xml
-
+;customer_EditCustomerDetails_cockpitgroup_ui_config;text/xml;Customer_EditCustomerDetails_CockpitGroup.xml;$jarResource/xml/Customer_EditCustomerDetails_CockpitGroup.xml
 
 #
 # Setup cockpit configuration

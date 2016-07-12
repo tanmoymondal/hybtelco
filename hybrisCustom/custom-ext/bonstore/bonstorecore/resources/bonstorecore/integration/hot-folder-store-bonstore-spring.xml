@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2016 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:file="http://www.springframework.org/schema/integration/file"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration
+		http://www.springframework.org/schema/integration/spring-integration.xsd
+		http://www.springframework.org/schema/integration/file
+		http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+		
+    <context:annotation-config/> 
+
+	<bean id="baseDirectoryBonstore" class="java.lang.String">
+		<constructor-arg value="${hotFolder.dir}" />
+	</bean>
+	<!-- 1) Scan for files -->
+	<file:inbound-channel-adapter id="batchFilesBonstore" directory="#{baseDirectoryBonstore}"
+		filename-regex="^(.*)-(\d+)\.csv" comparator="fileOrderComparator">
+		<int:poller fixed-rate="2000" />
+	</file:inbound-channel-adapter>
+
+	<!-- 2) move the file to processing and setup header -->
+	<file:outbound-gateway request-channel="batchFilesBonstore" reply-channel="batchFilesBonstoreProc"
+		directory="#{baseDirectoryBonstore}/processing" delete-source-files="true" />
+	<int:service-activator input-channel="batchFilesBonstoreProc" output-channel="batchFilesHeaderInit"
+		ref="bonstoreHeaderSetupTask" method="execute" />
+	<bean id="bonstoreHeaderSetupTask" class="de.hybris.platform.acceleratorservices.dataimport.batch.task.HeaderSetupTask">
+		<property name="catalog" value="hybrisBonstoreCatalog" />
+		<property name="net" value="false" />
+		<property name="storeBaseDirectory" ref="baseDirectoryBonstore" />
+	</bean>
+	
+	<bean id="batchInternalPointOfServiceConverterMapping"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+          p:mapping="internal_base_pointofservice"
+          p:converter-ref="batchInternalPointOfServiceConverter"/>
+ 
+    <bean id="batchInternalPointOfServiceConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+        <property name="header">
+            <value>
+                # Insert PointOfService
+                INSERT_UPDATE PointOfService;name[unique=true];type(code);openingSchedule(code);
+            </value>
+        </property>
+        <property name="impexRow">
+			<value>;{+0};{1};{2};</value>
+		</property>
+        <property name="type" value="PointOfService"/>
+    </bean>
+    
+    <bean id="batchInternalWarehouseConverterMapping"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+          p:mapping="internal_base_warehouse"
+          p:converter-ref="batchInternalWarehouseConverter"/>
+ 
+    <bean id="batchInternalWarehouseConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+        <property name="header">
+            <value>
+                # Insert Warehouse
+                INSERT_UPDATE Warehouse;code[unique=true];vendor(code);
+            </value>
+        </property>
+        <property name="impexRow">
+			<value>;{+0};{1};</value>
+		</property>
+        <property name="type" value="Warehouse"/>
+    </bean>
+    
+  <bean id="batchInternalBaseStoreConverterMapping"
+          class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+          p:mapping="internal_base_basestore"
+          p:converter-ref="batchInternalBaseStoreConverter"/>
+    
+    <bean id="batchInternalBaseStoreConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+		<property name="header">
+			<value>
+				# Insert BaseStore
+				INSERT_UPDATE BaseStore;uid[unique=true];name;pointsOfService(name);warehouses(code);
+			</value>
+		</property>
+		<property name="impexRow">
+			<value>;{+0};{1};{2};{3};</value>
+		</property>
+        <property name="type" value="BaseStore"/>
+	</bean>	 
+    
+    
+    
+    
+</beans>

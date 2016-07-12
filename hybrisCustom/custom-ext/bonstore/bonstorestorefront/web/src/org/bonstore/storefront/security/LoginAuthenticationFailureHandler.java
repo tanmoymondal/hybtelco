@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package org.bonstore.storefront.security;
 
@@ -29,11 +29,14 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler
 {
 	private BruteForceAttackCounter bruteForceAttackCounter;
+	private BonstoreLoginFailureHandler bonstoreLoginFailureHandler;
 
 	@Override
 	public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
 			final AuthenticationException exception) throws IOException, ServletException
 	{
+		// Register Login failure attempts
+		getBonstoreLoginFailureHandler().registerFailedLogin(request.getParameter("j_username"));
 		// Register brute attacks
 		bruteForceAttackCounter.registerLoginFailure(request.getParameter("j_username"));
 
@@ -54,5 +57,22 @@ public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
 	public void setBruteForceAttackCounter(final BruteForceAttackCounter bruteForceAttackCounter)
 	{
 		this.bruteForceAttackCounter = bruteForceAttackCounter;
+	}
+
+	/**
+	 * @param bonstoreLoginFailureHandler
+	 *           the bonstoreLoginFailureHandler to set
+	 */
+	public void setBonstoreLoginFailureHandler(final BonstoreLoginFailureHandler bonstoreLoginFailureHandler)
+	{
+		this.bonstoreLoginFailureHandler = bonstoreLoginFailureHandler;
+	}
+
+	/**
+	 * @return the bonstoreLoginFailureHandler
+	 */
+	public BonstoreLoginFailureHandler getBonstoreLoginFailureHandler()
+	{
+		return bonstoreLoginFailureHandler;
 	}
 }

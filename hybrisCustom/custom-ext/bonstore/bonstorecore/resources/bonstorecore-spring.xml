@@ -25,8 +25,11 @@
 
 	<!-- Spring Integration -->
 	<import resource="classpath:/bonstorecore/integration/hot-folder-store-electronics-spring.xml"/>
+	<import resource="classpath:/bonstorecore/integration/hot-folder-store-hybris-spring.xml"/>
 	<import resource="classpath:/bonstorecore/integration/hot-folder-store-apparel-spring.xml"/>
 	<import resource="classpath:/bonstorecore/integration/hot-folder-common-spring.xml"/>
+	<import resource="classpath:/bonstorecore/integration/hot-folder-store-bonstore-spring.xml"/>
+	
 
 	<!-- SystemSetup for the BonstoreCore -->
 	<bean id="acceleratorCoreSystemSetup" class="org.bonstore.core.setup.CoreSystemSetup"
@@ -468,6 +471,19 @@
 				<ref bean="bonsStoreEmailMessageModelPopulator"/>
 			</list>
 		</property>
+	</bean>
+	
+	<bean id="loginChangeInterceptor" class="org.bonstore.core.interceptors.LoginChangeInterceptor">
+		<property name="bonstoreCustomerDao" ref="bonstoreCustomerDao"></property>
+	</bean>
+	
+	<bean id="CustomerInterceptorMapping" class="de.hybris.platform.servicelayer.interceptor.impl.InterceptorMapping">
+		<property name="interceptor" ref="loginChangeInterceptor" />
+		<property name="typeCode" value="Customer" />
+	</bean>
+
+	<bean id="bonstoreCustomerDao" class="org.bonstore.core.dao.impl.BonstoreCustomerDaoImpl">
+		<property name="modelService" ref="modelService"/>
 	</bean>
 	
 </beans>

@@ -1,6 +1,55 @@
 #
 # Import Access Rights for CS Cockpit
 # 
+
+$START_USERRIGHTS
+Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
+
+UserGroup;cockpitgroup;;;;;;;;
+
+# Access Rights for Organization;;;;;;;;
+;;;;Organization;+;+;;;
+;;;;Organization.email;+;+;;;
+;;;;Organization.name;+;+;;;
+;;;;Organization.phone;+;+;;;
+;;;;Organization.organizationID;+;+;;;
+;;;;Organization.customer;+;+;;;
+
+$END_USERRIGHTS
+
+$START_USERRIGHTS
+Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
+
+UserGroup;csagentgroup;;;;;;;;
+
+# Access Rights for Organization;;;;;;;;
+;;;;Organization;+;+;;;
+;;;;Organization.email;+;;;;
+;;;;Organization.name;+;+;;;
+;;;;Organization.phone;+;+;;;
+;;;;Organization.organizationID;+;-;;;
+;;;;Organization.customer;+;-;;;
+
+$END_USERRIGHTS
+
+
+$START_USERRIGHTS
+Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
+
+UserGroup;CallCenterAdmin;;;;;;;;
+
+# Access Rights for Organization;;;;;;;;
+;;;;Organization;+;+;;;
+;;;;Organization.email;+;;;;
+;;;;Organization.name;+;+;;;
+;;;;Organization.phone;+;+;;;
+;;;;Organization.organizationID;+;+;;;
+;;;;Organization.customer;+;+;;;
+;;;;Customer.loginDisabled;+;+;;;
+
+$END_USERRIGHTS
+
+
 $START_USERRIGHTS
 Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
 
