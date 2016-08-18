@@ -20,16 +20,13 @@ public class OrganizationServiceImpl implements OrganizationService
 
 	private OrganizationDao organizationDao;
 
-	/**
-	 * @param bonStoreOrganizationDao
-	 *           the bonStoreOrganizationDao to set
-	 */
-	public void setBonStoreOrganizationDao(final OrganizationDao organizationDao)
-	{
-		this.organizationDao = organizationDao;
+	public OrganizationDao getOrganizationDao() {
+		return organizationDao;
 	}
 
-
+	public void setOrganizationDao(OrganizationDao organizationDao) {
+		this.organizationDao = organizationDao;
+	}
 
 	@Override
 	public List<OrganizationModel> getOrganizationList()
@@ -37,15 +34,12 @@ public class OrganizationServiceImpl implements OrganizationService
 		return organizationDao.getOrganizationList();
 	}
 
-	/**
-	 * @param organizationDao
-	 *           the organizationDao to set
-	 */
-	public void setOrganizationDao(final OrganizationDao organizationDao)
+
+
+	@Override
+	public List<OrganizationModel> getOrganizationByID(final String organizationId)
 	{
-		this.organizationDao = organizationDao;
+		return organizationDao.getOrganizationByID(organizationId);
 	}
-
-
 
 }

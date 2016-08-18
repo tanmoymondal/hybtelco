@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2016 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+-->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans.xsd">
+
+	 <bean class="org.bonstore.data.OrganizationData">
+	  <description>Data object representing a Organization</description>
+	  <property name="id" type="java.lang.String"/>
+	  <property name="name" type="java.lang.String"/>
+	  <property name="phonenumber" type="java.lang.String"/>
+	  <property name="email" type="java.lang.String"/>
+	 </bean>
+
+	 <bean class="org.bonstore.data.BonStoreCustomerData" extends= "de.hybris.platform.commercefacades.user.data.CustomerData">
+	  <description>Data object for BonStore Customer</description>
+	  <property name="status" type="java.lang.Boolean"/>
+	  <property name="attemptCount" type="java.lang.Integer"/>
+	  <property name="organizations" type="java.util.List&lt;org.bonstore.data.OrganizationData>" />
+	 </bean>
+	
+    <bean class="org.bonstore.data.BonstoreRegisterData" extends="de.hybris.platform.commercefacades.user.data.RegisterData">
+        <description>Data object representing a BonstoreRegisterData</description>
+        <property name="organizationIds" type="java.util.List&lt;java.lang.String>"/>
+    </bean>
+    
+</beans>

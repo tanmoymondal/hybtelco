@@ -32,6 +32,7 @@ git_info.properties
 */.idea/tasks.xml
 */.idea/dataSources*
 */.idea/shelf/
+*/.idea
 
 **/web/webroot/WEB-INF/classes
 **/classes

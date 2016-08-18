@@ -15,4 +15,6 @@ import org.bonstore.core.model.OrganizationModel;
 public interface OrganizationDao
 {
 	public List<OrganizationModel> getOrganizationList();
+
+	public List<OrganizationModel> getOrganizationByID(String organizationId);
 }

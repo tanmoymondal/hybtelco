@@ -3,6 +3,7 @@
  */
 package org.bonstore.core.dao.impl;
 
+import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
 
@@ -22,7 +23,6 @@ public class OrganizationDaoImpl implements OrganizationDao
 
 	@Autowired
 	private FlexibleSearchService flexibleSearchService;
-	//	private FlexibleSearchQuery query;
 	private SearchResult<OrganizationModel> searchResult;
 	private List<OrganizationModel> organizationModels;
 
@@ -33,14 +33,23 @@ public class OrganizationDaoImpl implements OrganizationDao
 				"SELECT {p:" + OrganizationModel.PK + "} "//
 						+ "FROM {" + OrganizationModel._TYPECODE + " AS p} ";
 
-
-		/*
-		 * query = new FlexibleSearchQuery(queryString); searchResult = flexibleSearchService.<OrganizationModel>
-		 * search(query); // return flexibleSearchService.<OrganizationModel> search(query).getResult();
-		 * organizationModels = searchResult.getResult(); return organizationModels;
-		 */
 		searchResult = flexibleSearchService.search(queryString);
 		organizationModels = searchResult.getResult();
 		return organizationModels;
+	}
+
+	@Override
+	public List<OrganizationModel> getOrganizationByID(final String organizationId)
+	{
+		final StringBuilder builder = new StringBuilder();
+		builder.append("SELECT {o:").append("pk").append("} ");
+		builder.append("FROM {").append("Organization").append(" AS o} ");
+		builder.append("WHERE ").append("{o:").append("	id").append("}=?organizationId");
+
+		final FlexibleSearchQuery query = new FlexibleSearchQuery(builder.toString());
+//		query.addQueryParameter("organizationid", organizationId);
+		query.addQueryParameter("id", organizationId);
+
+		return this.flexibleSearchService.<OrganizationModel> search(query).getResult();
 	}
 }

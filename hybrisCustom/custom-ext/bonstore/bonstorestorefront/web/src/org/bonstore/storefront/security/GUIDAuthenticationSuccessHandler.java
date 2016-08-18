@@ -34,6 +34,7 @@ public class GUIDAuthenticationSuccessHandler implements AuthenticationSuccessHa
 	private GUIDCookieStrategy guidCookieStrategy;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	private BonstoreLoginSuccessHandler bonstoreLoginSuccessHandler;
+	private BonStoreAuthenticationSuccessHandler bonStoreAuthenticationSuccessHandler;
 
 	@Override
 	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
@@ -41,7 +42,8 @@ public class GUIDAuthenticationSuccessHandler implements AuthenticationSuccessHa
 	{
 		getBonstoreLoginSuccessHandler().registerSuccessLogin(request.getParameter("j_username"));
 		getGuidCookieStrategy().setCookie(request, response);
-		getAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
+	//	getAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
+		getBonStoreAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
 	}
 
 	protected GUIDCookieStrategy getGuidCookieStrategy()
@@ -90,5 +92,18 @@ public class GUIDAuthenticationSuccessHandler implements AuthenticationSuccessHa
 	{
 		this.bonstoreLoginSuccessHandler = bonstoreLoginSuccessHandler;
 	}
+
+	public BonStoreAuthenticationSuccessHandler getBonStoreAuthenticationSuccessHandler()
+	{
+		return bonStoreAuthenticationSuccessHandler;
+	}
+
+
+	public void setBonStoreAuthenticationSuccessHandler(
+			final BonStoreAuthenticationSuccessHandler bonStoreAuthenticationSuccessHandler)
+	{
+		this.bonStoreAuthenticationSuccessHandler = bonStoreAuthenticationSuccessHandler;
+	}
+
 
 }

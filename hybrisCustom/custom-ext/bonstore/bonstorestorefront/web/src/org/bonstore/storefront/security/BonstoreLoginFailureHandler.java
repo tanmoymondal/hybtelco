@@ -4,8 +4,7 @@
 package org.bonstore.storefront.security;
 
 import de.hybris.platform.core.model.user.CustomerModel;
-import de.hybris.platform.servicelayer.model.ModelService;
-import de.hybris.platform.servicelayer.user.UserService;
+import de.hybris.platform.acceleratorstorefrontcommons.security.AbstractAcceleratorAuthenticationProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -15,12 +14,9 @@ import org.apache.log4j.Logger;
  * @author Tanmoy_Mondal
  *
  */
-public class BonstoreLoginFailureHandler
+public class BonstoreLoginFailureHandler extends AbstractAcceleratorAuthenticationProvider
 {
 	private static final Logger LOG = Logger.getLogger(BonstoreLoginFailureHandler.class);//NOPMD
-	private UserService userService;
-	private ModelService modelService;
-
 
 	public void registerFailedLogin(final String uid)
 	{
@@ -42,40 +38,6 @@ public class BonstoreLoginFailureHandler
 		}
 		LOG.info("### Exiting the registerFailedLogin method ###");
 
-	}
-
-	/**
-	 * @return the userService
-	 */
-	public UserService getUserService()
-	{
-		return userService;
-	}
-
-	/**
-	 * @param userService
-	 *           the userService to set
-	 */
-	public void setUserService(final UserService userService)
-	{
-		this.userService = userService;
-	}
-
-	/**
-	 * @param modelService
-	 *           the modelService to set
-	 */
-	public void setModelService(final ModelService modelService)
-	{
-		this.modelService = modelService;
-	}
-
-	/**
-	 * @return the modelService
-	 */
-	public ModelService getModelService()
-	{
-		return modelService;
 	}
 
 }

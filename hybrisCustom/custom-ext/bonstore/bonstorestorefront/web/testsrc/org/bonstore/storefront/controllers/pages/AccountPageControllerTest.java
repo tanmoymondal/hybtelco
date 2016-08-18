@@ -9,12 +9,14 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package org.bonstore.storefront.controllers.pages;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorservices.config.SiteConfigService;
@@ -60,7 +62,6 @@ import de.hybris.platform.commerceservices.search.pagedata.PaginationData;
 import de.hybris.platform.commerceservices.search.pagedata.SearchPageData;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
 import de.hybris.platform.servicelayer.i18n.I18NService;
-import org.bonstore.storefront.controllers.ControllerConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,6 +69,11 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.bonstore.core.facades.BonStoreCustomerFacade;
+import org.bonstore.data.OrganizationData;
+import org.bonstore.storefront.controllers.ControllerConstants;
+import org.bonstore.storefront.forms.OrganizationForm;
+import org.bonstore.storefront.validator.BonStoreOrganizationValidator;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -106,9 +112,13 @@ public class AccountPageControllerTest
 	private static final String REDIRECT_TO_PASSWORD_UPDATE_PAGE = "redirect:/my-account/update-password";
 	private static final String REDIRECT_TO_ADDRESS_BOOK_PAGE = "redirect:/my-account/address-book";
 	private static final String REDIRECT_TO_ORDER_HISTORY_PAGE = "redirect:/my-account/orders";
+	private static final String REDIRECT_TO_EDIT_ORGANIZATION_PAGE = "redirect:/my-account/edit-organization/";
+	private static final String REDIRECT_TO_ORGANIZATIONS_PAGE = "redirect:/my-account/organizations";
+
 
 	private static final String UPDATE_EMAIL_CMS_PAGE = "update-email";
 	private static final String UPDATE_PROFILE_CMS_PAGE = "update-profile";
+	private static final String ORGANIZATION_ID = "2";
 
 	@InjectMocks
 	private final AccountPageController accountController = Mockito.spy(new AccountPageController());
@@ -183,6 +193,14 @@ public class AccountPageControllerTest
 	private ProfileValidator profileValidator; //NOPMD
 	@Mock
 	private SiteConfigService siteConfigService; //NOPMD
+	@Mock
+	private BonStoreCustomerFacade bonStoreCustomerFacade;
+	@Mock
+	private OrganizationForm organizationForm;
+	@Mock
+	private BonStoreOrganizationValidator bonStoreOrganizationValidator;
+	@Mock
+	private OrganizationData organizationData;
 
 	private List breadcrumbsList;
 
@@ -321,10 +339,10 @@ public class AccountPageControllerTest
 		avsResult.setDecision(AddressVerificationDecision.REVIEW);
 		createBasicAddressFields();
 		BDDMockito.given(addressVerificationFacade.verifyAddressData(Mockito.any(AddressData.class))).willReturn(avsResult);
-		BDDMockito.given(
-				Boolean.valueOf(addressVerificationResultHandler.handleResult(Mockito.eq(avsResult), Mockito.any(AddressData.class),
-						Mockito.eq(page), Mockito.eq(redirectModel), Mockito.eq(bindingResult), Mockito.anyBoolean(),
-						Mockito.anyString()))).willReturn(Boolean.TRUE);
+		BDDMockito.given(Boolean.valueOf(
+				addressVerificationResultHandler.handleResult(Mockito.eq(avsResult), Mockito.any(AddressData.class), Mockito.eq(page),
+						Mockito.eq(redirectModel), Mockito.eq(bindingResult), Mockito.anyBoolean(), Mockito.anyString())))
+				.willReturn(Boolean.TRUE);
 
 		final String addAddressPage = accountController.addAddress(addressForm, bindingResult, page, redirectModel);
 
@@ -338,10 +356,10 @@ public class AccountPageControllerTest
 		avsResult.setDecision(AddressVerificationDecision.ACCEPT);
 		createBasicAddressFields();
 		BDDMockito.given(addressVerificationFacade.verifyAddressData(Mockito.any(AddressData.class))).willReturn(avsResult);
-		BDDMockito.given(
-				Boolean.valueOf(addressVerificationResultHandler.handleResult(Mockito.eq(avsResult), Mockito.any(AddressData.class),
-						Mockito.eq(page), Mockito.eq(redirectModel), Mockito.eq(bindingResult), Mockito.anyBoolean(),
-						Mockito.anyString()))).willReturn(Boolean.FALSE);
+		BDDMockito.given(Boolean.valueOf(
+				addressVerificationResultHandler.handleResult(Mockito.eq(avsResult), Mockito.any(AddressData.class), Mockito.eq(page),
+						Mockito.eq(redirectModel), Mockito.eq(bindingResult), Mockito.anyBoolean(), Mockito.anyString())))
+				.willReturn(Boolean.FALSE);
 
 		final String addAddressPage = accountController.addAddress(addressForm, bindingResult, page, redirectModel);
 
@@ -356,13 +374,15 @@ public class AccountPageControllerTest
 
 		Mockito.verify(page).addAttribute("countryData", checkoutFacade.getDeliveryCountries());
 		Mockito.verify(page).addAttribute("titleData", userFacade.getTitles());
-		Mockito.verify(page)
-				.addAttribute("addressBookEmpty", Boolean.valueOf(CollectionUtils.isEmpty(userFacade.getAddressBook())));
-		Mockito.verify(page)
-				.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
+		Mockito.verify(page).addAttribute("addressBookEmpty",
+				Boolean.valueOf(CollectionUtils.isEmpty(userFacade.getAddressBook())));
+		Mockito.verify(page).addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS,
+				ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
 		Mockito.verify(page).addAttribute("edit", Boolean.TRUE);
 		assertEquals(FULL_VIEW_PATH, addressBookPage);
 	}
+
+
 
 	@Test
 	public void shouldNotUpdateInvalidAddress() throws CMSItemNotFoundException
@@ -382,10 +402,10 @@ public class AccountPageControllerTest
 		avsResult.setDecision(AddressVerificationDecision.REVIEW);
 		createBasicAddressFields();
 		BDDMockito.given(addressVerificationFacade.verifyAddressData(Mockito.any(AddressData.class))).willReturn(avsResult);
-		BDDMockito.given(
-				Boolean.valueOf(addressVerificationResultHandler.handleResult(Mockito.eq(avsResult), Mockito.any(AddressData.class),
-						Mockito.eq(page), Mockito.eq(redirectModel), Mockito.eq(bindingResult), Mockito.anyBoolean(),
-						Mockito.anyString()))).willReturn(Boolean.TRUE);
+		BDDMockito.given(Boolean.valueOf(
+				addressVerificationResultHandler.handleResult(Mockito.eq(avsResult), Mockito.any(AddressData.class), Mockito.eq(page),
+						Mockito.eq(redirectModel), Mockito.eq(bindingResult), Mockito.anyBoolean(), Mockito.anyString())))
+				.willReturn(Boolean.TRUE);
 
 		final String addAddressPage = accountController.editAddress(addressForm, bindingResult, page, redirectModel);
 
@@ -543,8 +563,8 @@ public class AccountPageControllerTest
 	public void shouldNotUpdateInvalidPassword() throws CMSItemNotFoundException, PasswordMismatchException, DuplicateUidException
 	{
 		createEmailForm(EMAIL, "123");
-		BDDMockito.doThrow(new PasswordMismatchException("error")).when(customerFacade)
-				.changeUid(Mockito.anyString(), Mockito.anyString());
+		BDDMockito.doThrow(new PasswordMismatchException("error")).when(customerFacade).changeUid(Mockito.anyString(),
+				Mockito.anyString());
 		final String emailUpdatePage = accountController.updateEmail(emailForm, bindingResult, page, redirectModel);
 
 		BDDMockito.verify(bindingResult).rejectValue("password", "profile.currentPassword.invalid");
@@ -566,8 +586,8 @@ public class AccountPageControllerTest
 	public void shouldNotUpdatePassword() throws CMSItemNotFoundException
 	{
 		BDDMockito.given(Boolean.valueOf(bindingResult.hasErrors())).willReturn(Boolean.TRUE);
-		BDDMockito.given(accountBreadcrumbBuilder.getBreadcrumbs("text.account.profile.updatePasswordForm")).willReturn(
-				breadcrumbsList);
+		BDDMockito.given(accountBreadcrumbBuilder.getBreadcrumbs("text.account.profile.updatePasswordForm"))
+				.willReturn(breadcrumbsList);
 		final String passwordPage = accountController.updatePassword(passwordForm, bindingResult, page, redirectModel);
 
 		BDDMockito.verify(page).addAttribute("breadcrumbs", breadcrumbsList);
@@ -592,8 +612,8 @@ public class AccountPageControllerTest
 	{
 		BDDMockito.given(passwordForm.getCheckNewPassword()).willReturn(TEST_CODE);
 		BDDMockito.given(passwordForm.getNewPassword()).willReturn(TEST_CODE);
-		Mockito.doThrow(new PasswordMismatchException("error")).when(customerFacade)
-				.changePassword(Mockito.anyString(), Mockito.anyString());
+		Mockito.doThrow(new PasswordMismatchException("error")).when(customerFacade).changePassword(Mockito.anyString(),
+				Mockito.anyString());
 
 		final String passwordPage = accountController.updatePassword(passwordForm, bindingResult, page, redirectModel);
 
@@ -653,4 +673,86 @@ public class AccountPageControllerTest
 		BDDMockito.verify(userFacade, BDDMockito.times(1)).unlinkCCPaymentInfo(Mockito.anyString());
 		assertEquals(REDIRECT_TO_PAYMENT_INFO_PAGE, paymentDetailsPage);
 	}
+
+
+	// Additional Tests related to Organizations
+
+	@Test
+	public void shouldGetOrganizations() throws CMSItemNotFoundException
+	{
+		given(bonStoreCustomerFacade.getOrganizationsForCurrentUser()).willReturn(Collections.singletonList(organizationData));
+
+		final String organizationsPage = accountController.getOrganizations(page);
+		verify(page).addAttribute("organizationsData", Collections.singletonList(organizationData));
+		verify(page).addAttribute(CMS_PAGE_MODEL, contentPageModel);
+		verify(page).addAttribute("pageTitle", TITLE_FOR_PAGE);
+
+		assertEquals(FULL_VIEW_PATH, organizationsPage);
+	}
+
+	@Test
+	public void shouldGetEditOrganization() throws CMSItemNotFoundException
+	{
+		final String organizationPage = accountController.editOrganization(TEST_CODE, page);
+		verify(page).addAttribute("organizationsEmpty",
+				Boolean.valueOf(CollectionUtils.isEmpty(bonStoreCustomerFacade.getOrganizationsForCurrentUser())));
+		verify(page).addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
+		verify(page).addAttribute("edit", Boolean.TRUE);
+		assertEquals(FULL_VIEW_PATH, organizationPage);
+	}
+
+	@Test
+	public void shouldEditValidOrganization() throws CMSItemNotFoundException
+	{
+		final String editOrganizationPage = accountController.editOrganization(organizationForm, bindingResult, page,
+				redirectModel);
+		verify(bonStoreOrganizationValidator).validate(organizationForm, bindingResult);
+		verify(bonStoreCustomerFacade).editOrganization(Mockito.any(OrganizationData.class));
+		assertThat(editOrganizationPage, CoreMatchers.containsString(REDIRECT_TO_EDIT_ORGANIZATION_PAGE));
+	}
+
+
+	@Test
+	public void shouldNotEditInvalidOrganization() throws CMSItemNotFoundException
+	{
+		given(Boolean.valueOf(bindingResult.hasErrors())).willReturn(Boolean.TRUE);
+		final String organizationPage = accountController.editOrganization(organizationForm, bindingResult, page, redirectModel);
+		assertEquals(FULL_VIEW_PATH, organizationPage);
+	}
+
+	@Test
+	public void shouldAddValidOrganization() throws CMSItemNotFoundException
+	{
+		final String addOrganizationPage = accountController.addOrganization(organizationForm, bindingResult, page, redirectModel);
+		verify(bonStoreOrganizationValidator).validate(organizationForm, bindingResult);
+		verify(bonStoreCustomerFacade).addOrganization((Mockito.any(OrganizationData.class)));
+		assertThat(addOrganizationPage, CoreMatchers.containsString(REDIRECT_TO_EDIT_ORGANIZATION_PAGE));
+	}
+
+	@Test
+	public void shouldNotAddInvalidOrganization() throws CMSItemNotFoundException
+	{
+		given(Boolean.valueOf(bindingResult.hasErrors())).willReturn(Boolean.TRUE);
+		final String organizationPage = accountController.addOrganization(organizationForm, bindingResult, page, redirectModel);
+		assertEquals(FULL_VIEW_PATH, organizationPage);
+	}
+
+
+	@Test
+	public void shouldRemoveOrganizationSuccessful()
+	{
+		given(bonStoreCustomerFacade.removeOrganization(ORGANIZATION_ID)).willReturn(Boolean.TRUE);
+		final String organizationPage = accountController.removeOrganization(ORGANIZATION_ID, redirectModel);
+		assertEquals(REDIRECT_TO_ORGANIZATIONS_PAGE, organizationPage);
+	}
+
+	@Test
+	public void shouldNotRemoveOrganization()
+	{
+		given(bonStoreCustomerFacade.removeOrganization(ORGANIZATION_ID)).willReturn(Boolean.FALSE);
+		final String organizationPage = accountController.removeOrganization(ORGANIZATION_ID, redirectModel);
+		assertEquals(REDIRECT_TO_ORGANIZATIONS_PAGE, organizationPage);
+	}
+
+
 }

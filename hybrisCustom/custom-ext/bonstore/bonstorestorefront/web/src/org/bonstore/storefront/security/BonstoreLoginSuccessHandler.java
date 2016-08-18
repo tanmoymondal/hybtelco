@@ -4,8 +4,7 @@
 package org.bonstore.storefront.security;
 
 import de.hybris.platform.core.model.user.CustomerModel;
-import de.hybris.platform.servicelayer.model.ModelService;
-import de.hybris.platform.servicelayer.user.UserService;
+import de.hybris.platform.acceleratorstorefrontcommons.security.AbstractAcceleratorAuthenticationProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -15,11 +14,9 @@ import org.apache.log4j.Logger;
  * @author Tanmoy_Mondal
  *
  */
-public class BonstoreLoginSuccessHandler
+public class BonstoreLoginSuccessHandler extends AbstractAcceleratorAuthenticationProvider
 {
 	private static final Logger LOG = Logger.getLogger(BonstoreLoginSuccessHandler.class);
-	private UserService userService;
-	private ModelService modelService;
 
 	public void registerSuccessLogin(final String uid)
 	{
@@ -39,40 +36,6 @@ public class BonstoreLoginSuccessHandler
 		}
 		LOG.info("### Exiting the registerSuccessLogin method ###");
 
-	}
-
-	/**
-	 * @return the userService
-	 */
-	public UserService getUserService()
-	{
-		return userService;
-	}
-
-	/**
-	 * @param userService
-	 *           the userService to set
-	 */
-	public void setUserService(final UserService userService)
-	{
-		this.userService = userService;
-	}
-
-	/**
-	 * @param modelService
-	 *           the modelService to set
-	 */
-	public void setModelService(final ModelService modelService)
-	{
-		this.modelService = modelService;
-	}
-
-	/**
-	 * @return the modelService
-	 */
-	public ModelService getModelService()
-	{
-		return modelService;
 	}
 
 }

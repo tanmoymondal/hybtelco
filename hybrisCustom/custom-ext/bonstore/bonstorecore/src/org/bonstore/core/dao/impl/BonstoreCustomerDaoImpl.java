@@ -7,7 +7,6 @@ import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.servicelayer.model.ModelService;
 
 import org.bonstore.core.dao.BonstoreCustomerDao;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BonstoreCustomerDaoImpl implements BonstoreCustomerDao
 {
-	@Autowired
 	private ModelService modelService;
 
 	@Override
@@ -25,5 +23,22 @@ public class BonstoreCustomerDaoImpl implements BonstoreCustomerDao
 		customer.setAttemptCount(0);
 		customer.setStatus(false);
 		modelService.save(customer);
+	}
+
+	/**
+	 * @return the modelService
+	 */
+	public ModelService getModelService()
+	{
+		return modelService;
+	}
+
+	/**
+	 * @param modelService
+	 *           the modelService to set
+	 */
+	public void setModelService(final ModelService modelService)
+	{
+		this.modelService = modelService;
 	}
 }

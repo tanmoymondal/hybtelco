@@ -359,5 +359,15 @@
 	      class="de.hybris.platform.commerceservices.spring.config.ListMergeDirectiveBeanPostProcessor"/>
 	<bean id="mapMergeBeanPostProcessor"
 	      class="de.hybris.platform.commerceservices.spring.config.MapMergeDirectiveBeanPostProcessor"/>
+	      
+	<alias name="bonstoreCustomerFacade" alias="bonstoreCustomerFacade"/>
+	<bean id="bonstoreCustomerFacade" class="org.bonstore.storefront.facades.BonstoreFrontCustomerFacade">
+		<property name="customerNameStrategy" ref="customerNameStrategy"/>
+		<property name="customerAccountService" ref="customerAccountService"/>
+		<property name="commonI18NService" ref="commonI18NService"/>
+		<property name="modelService" ref="modelService"/>
+		<property name="userService" ref="userService"/>
+		<property name="defaultOrgUserService" ref="defaultOrgUserService"/>
+	</bean>
 
 </beans>

@@ -451,11 +451,13 @@
 		<property name="sessionService" ref="sessionService"/>
 		
 	</bean>
-	<bean id="bonStoreOrganizationService" class="org.bonstore.core.services.impl.OrganizationServiceImpl" autowire="byName">
+	<alias name="organizationService" alias="bonStoreOrganizationService"/>
+	<bean id="organizationService" class="org.bonstore.core.services.impl.OrganizationServiceImpl" autowire="byName">
 		<property name="organizationDao" ref="bonStoreOrganizationDao"/>
 	</bean>
-	
-	<bean id="bonStoreOrganizationDao" class="org.bonstore.core.dao.impl.OrganizationDaoImpl"/>
+
+	<alias name="organizationDao" alias="bonStoreOrganizationDao"/>
+	<bean id="organizationDao" class="org.bonstore.core.dao.impl.OrganizationDaoImpl"/>
 	
 	<bean id="bonsStoreEmailMessageModelPopulator" class="org.bonstore.core.populators.EmailMessageModelPopulator" autowire="byName">
 		<!-- <property name="replyToAddress" value="${mail.replyto}"/>
@@ -472,6 +474,10 @@
 			</list>
 		</property>
 	</bean>
+
+	<bean id="bonstoreCustomerDao" class="org.bonstore.core.dao.impl.BonstoreCustomerDaoImpl">
+		<property name="modelService" ref="modelService"/>
+	</bean>
 	
 	<bean id="loginChangeInterceptor" class="org.bonstore.core.interceptors.LoginChangeInterceptor">
 		<property name="bonstoreCustomerDao" ref="bonstoreCustomerDao"></property>
@@ -482,8 +488,19 @@
 		<property name="typeCode" value="Customer" />
 	</bean>
 
-	<bean id="bonstoreCustomerDao" class="org.bonstore.core.dao.impl.BonstoreCustomerDaoImpl">
-		<property name="modelService" ref="modelService"/>
+	<bean id="usersDaoImpl" class="org.bonstore.core.organization.dao.impl.UsersDaoImpl">
+	</bean>
+
+	<alias name="defaultOrgUserService" alias="orgUserService" />
+	<bean id="defaultOrgUserService"
+		  class="org.bonstore.core.organization.impl.DefaultOrgUserService">
+		<property name="usersDao" ref="usersDaoImpl" />
+	</bean>
+
+	<alias name="defaultBonStoreCustomerFacade" alias="bonStoreCustomerFacade"/>
+	<bean id="defaultBonStoreCustomerFacade" class="org.bonstore.core.facades.impl.DefaultBonStoreCustomerFacade">
+		<property name="orgUserService" ref="orgUserService" />
+		<property name="userService" ref="userService" />
 	</bean>
 	
 </beans>
